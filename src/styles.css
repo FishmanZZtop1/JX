@@ -344,6 +344,74 @@ a {
   opacity: var(--landing-night-opacity);
 }
 
+.landingHeader {
+  position: absolute;
+  top: max(24px, env(safe-area-inset-top));
+  right: clamp(24px, 4vw, 64px);
+  left: clamp(24px, 4vw, 64px);
+  z-index: 14;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: var(--landing-scene-opacity);
+  pointer-events: auto;
+}
+
+.landingBrandButton,
+.landingDownloadButton {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  color: rgba(245, 248, 255, 0.9);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-zh-sans);
+  font-size: 13px;
+  font-weight: 420;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.86);
+  transition: color 240ms ease, opacity 240ms ease, transform 240ms ease;
+}
+
+.landingBrandButton {
+  gap: 10px;
+  padding: 0;
+}
+
+.landingBrandButton img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.34));
+}
+
+.landingDownloadButton {
+  min-height: 34px;
+  padding: 7px 15px;
+  border: 1px solid rgba(235, 242, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(18, 26, 52, 0.26);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 22px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.landingBrandButton:hover,
+.landingBrandButton:focus-visible,
+.landingDownloadButton:hover,
+.landingDownloadButton:focus-visible {
+  color: #fff;
+  transform: translate3d(0, -1px, 0);
+}
+
+.landingBrandButton:focus-visible,
+.landingDownloadButton:focus-visible {
+  outline: 1px solid rgba(239, 245, 255, 0.86);
+  outline-offset: 5px;
+}
+
 .landingLegalLine {
   position: absolute;
   right: auto;
@@ -485,6 +553,23 @@ a {
   min-height: 390px;
 }
 
+.landingGlassDialog--download {
+  width: min(700px, calc(100vw - 48px));
+  min-height: 430px;
+}
+
+.landingGlassDialog--privacy {
+  width: min(720px, calc(100vw - 48px));
+  height: min(680px, calc(100vh - 64px));
+  min-height: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(225, 234, 255, 0.42) transparent;
+}
+
 .landingGlassDialog::before {
   content: "";
   position: absolute;
@@ -587,6 +672,149 @@ a {
   overflow-wrap: anywhere;
   text-decoration-color: rgba(190, 207, 255, 0.46);
   text-underline-offset: 6px;
+}
+
+.landingDownloadContent {
+  max-width: 590px;
+}
+
+.landingDownloadContent > p:not(.landingGlassEyebrow) {
+  margin: -4px 0 28px;
+  color: rgba(238, 244, 255, 0.75);
+  font-family: var(--font-zh-sans);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.landingStoreGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.landingStoreCard {
+  min-width: 0;
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid rgba(238, 245, 255, 0.27);
+  border-radius: 24px;
+  color: rgba(250, 252, 255, 0.95);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(168, 185, 224, 0.08));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.22),
+    inset -10px -12px 22px rgba(7, 15, 38, 0.16),
+    0 18px 36px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  text-decoration: none;
+  transition: border-color 220ms ease, background 220ms ease, transform 220ms ease;
+}
+
+a.landingStoreCard:hover,
+a.landingStoreCard:focus-visible {
+  border-color: rgba(255, 255, 255, 0.72);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(168, 185, 224, 0.14));
+  transform: translate3d(0, -2px, 0);
+}
+
+.landingStoreCard > span:last-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.landingStoreCard small {
+  color: rgba(225, 233, 250, 0.68);
+  font-family: var(--font-zh-sans);
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.landingStoreCard strong {
+  color: rgba(255, 255, 255, 0.96);
+  font-family: var(--font-zh-sans);
+  font-size: 15px;
+  font-weight: 560;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.landingStoreIcon {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+
+.landingStoreIconApple {
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  line-height: 1;
+}
+
+.landingStoreIconPlay {
+  position: relative;
+  overflow: hidden;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #2ec5f5 0 34%, #6ade65 34% 58%, #ffd348 58% 78%, #f15b5e 78%);
+  clip-path: polygon(8% 2%, 91% 50%, 8% 98%);
+}
+
+.landingStoreIconPlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(70deg, transparent 44%, rgba(255, 255, 255, 0.42) 45% 53%, transparent 54%);
+}
+
+.landingPrivacyContent {
+  text-align: left;
+}
+
+.landingPrivacyContent h2,
+.landingPrivacyContent .landingGlassEyebrow,
+.landingPrivacyUpdated {
+  text-align: center;
+}
+
+.landingPrivacyContent h2 {
+  margin-bottom: 8px;
+}
+
+.landingPrivacyUpdated {
+  margin: 0 0 26px;
+  color: rgba(218, 228, 250, 0.6);
+  font-family: var(--font-zh-sans);
+  font-size: 12px;
+}
+
+.landingPrivacyContent h3 {
+  margin: 26px 0 8px;
+  color: rgba(250, 252, 255, 0.96);
+  font-family: var(--font-zh-display);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.landingPrivacyContent p {
+  margin: 0;
+  color: rgba(239, 244, 255, 0.78);
+  font-family: var(--font-zh-sans);
+  font-size: 13.5px;
+  font-weight: 350;
+  line-height: 1.9;
+}
+
+.landingPrivacyContent .landingGlassEyebrow {
+  margin-bottom: 10px;
 }
 
 @keyframes landingGlassScrimIn {
@@ -1654,6 +1882,27 @@ a {
     object-position: center center;
   }
 
+  .landingHeader {
+    top: max(16px, env(safe-area-inset-top));
+    right: 18px;
+    left: 18px;
+  }
+
+  .landingBrandButton,
+  .landingDownloadButton {
+    font-size: 12px;
+  }
+
+  .landingBrandButton img {
+    width: 25px;
+    height: 25px;
+  }
+
+  .landingDownloadButton {
+    min-height: 32px;
+    padding: 6px 12px;
+  }
+
   .landingLegalLine {
     bottom: max(13px, env(safe-area-inset-bottom));
     width: calc(100vw - 36px);
@@ -1706,6 +1955,18 @@ a {
     min-height: 400px;
   }
 
+  .landingGlassDialog--download {
+    min-height: 0;
+    padding-top: 58px;
+    padding-bottom: 34px;
+  }
+
+  .landingGlassDialog--privacy {
+    height: calc(100svh - 36px);
+    min-height: 0;
+    padding: 52px 26px 34px;
+  }
+
   .landingGlassLogo {
     width: 88px;
     height: 88px;
@@ -1734,6 +1995,40 @@ a {
 
   .landingGlassContact a {
     font-size: 14px;
+  }
+
+  .landingDownloadContent > p:not(.landingGlassEyebrow) {
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+
+  .landingStoreGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .landingStoreCard {
+    min-height: 78px;
+    padding: 14px 16px;
+    border-radius: 20px;
+  }
+
+  .landingStoreCard strong {
+    font-size: 14px;
+  }
+
+  .landingPrivacyContent p {
+    font-size: 13px;
+    line-height: 1.85;
+  }
+
+  .landingPrivacyContent h3 {
+    margin-top: 22px;
+    font-size: 16px;
+  }
+
+  .landingPrivacyUpdated {
+    margin-bottom: 20px;
   }
 
 }
