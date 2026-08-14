@@ -61,7 +61,9 @@ export default function LandingSequenceLayer() {
 
       const shouldResume = !video.paused;
       video.pause();
-      video.preload = "auto";
+      // Metadata is enough to start the transition without forcing the browser
+      // to buffer the full movie while the 3D scene is still active.
+      video.preload = "metadata";
       video.src = nextSource;
       video.dataset.source = nextSource;
       video.load();
@@ -162,8 +164,9 @@ export default function LandingSequenceLayer() {
           aria-label="返回首页"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <img src="/brand/jinxiu-logo.png" alt="" />
-          <span>锦宿Xiu</span>
+          <span className="landingBrandLockup" aria-hidden="true">
+            <img src="/scene-assets/landing-lockup-xiu.png" alt="" />
+          </span>
         </button>
         <button
           type="button"
@@ -257,7 +260,7 @@ export default function LandingSequenceLayer() {
                       >
                         <span className="landingStoreIcon landingStoreIconApple" aria-hidden="true"></span>
                         <span>
-                          <small>下载于</small>
+                          <small>ios下载</small>
                           <strong>App Store</strong>
                         </span>
                       </a>

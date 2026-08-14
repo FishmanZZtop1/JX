@@ -22,7 +22,9 @@ function SceneFrameDriver() {
     const shouldAnimate = () =>
       document.visibilityState === "visible" &&
       flightRuntime.progress >= 0.27 &&
-      flightRuntime.progress < 0.965;
+      // The landing sequence owns the final viewport. Stop the 3D render loop
+      // before its video and canvas effects become visible on top of it.
+      flightRuntime.progress < 0.84;
 
     const tick = () => {
       rafId = 0;

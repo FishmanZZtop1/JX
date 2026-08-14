@@ -80,6 +80,7 @@ export default function LandingStarfield() {
     let dpr = 1;
     let portrait = false;
     let stars: LandingStar[] = [];
+    let context: CanvasRenderingContext2D | null = null;
 
     const resize = () => {
       const canvas = canvasRef.current;
@@ -88,6 +89,7 @@ export default function LandingStarfield() {
       width = Math.max(1, rect.width);
       height = Math.max(1, rect.height);
       portrait = width / height < 0.78;
+      context = canvas.getContext("2d", { alpha: true });
       const pixelCap = Math.sqrt(2_000_000 / Math.max(1, width * height));
       dpr = Math.max(0.82, Math.min(window.devicePixelRatio || 1, 1.25, pixelCap));
       canvas.width = Math.round(width * dpr);
@@ -97,7 +99,6 @@ export default function LandingStarfield() {
 
     const clear = () => {
       const canvas = canvasRef.current;
-      const context = canvas?.getContext("2d", { alpha: true });
       if (!canvas || !context) return;
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -108,7 +109,6 @@ export default function LandingStarfield() {
 
     const draw = (now: number) => {
       const canvas = canvasRef.current;
-      const context = canvas?.getContext("2d", { alpha: true });
       if (!canvas || !context) return;
 
       const reveal = smoothstep(LANDING_STARS_START, LANDING_STARS_FULL, flightRuntime.progress);

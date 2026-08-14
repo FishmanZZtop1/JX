@@ -379,11 +379,21 @@ a {
   padding: 0;
 }
 
-.landingBrandButton img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  border-radius: 8px;
+.landingBrandLockup {
+  position: relative;
+  display: block;
+  flex: 0 0 132px;
+  width: 132px;
+  height: 38px;
+  overflow: hidden;
+}
+
+.landingBrandLockup img {
+  display: block;
+  width: 132px;
+  max-width: none;
+  height: auto;
+  transform: translate3d(0, -8px, 0);
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.34));
 }
 
@@ -622,7 +632,15 @@ a {
   width: 104px;
   height: 104px;
   object-fit: contain;
+  object-position: center;
   filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.3));
+}
+
+.landingGlassDialog--download .landingGlassLogo,
+.landingGlassDialog--privacy .landingGlassLogo {
+  align-self: center;
+  width: 128px;
+  height: 128px;
 }
 
 .landingGlassContent {
@@ -726,19 +744,21 @@ a.landingStoreCard:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  text-align: left;
 }
 
 .landingStoreCard small {
   color: rgba(225, 233, 250, 0.68);
   font-family: var(--font-zh-sans);
-  font-size: 10px;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.2;
 }
 
 .landingStoreCard strong {
   color: rgba(255, 255, 255, 0.96);
   font-family: var(--font-zh-sans);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 560;
   line-height: 1.25;
   overflow-wrap: anywhere;
@@ -1893,9 +1913,15 @@ a.landingStoreCard:focus-visible {
     font-size: 12px;
   }
 
-  .landingBrandButton img {
-    width: 25px;
-    height: 25px;
+  .landingBrandLockup {
+    flex-basis: 116px;
+    width: 116px;
+    height: 34px;
+  }
+
+  .landingBrandLockup img {
+    width: 116px;
+    transform: translate3d(0, -7px, 0);
   }
 
   .landingDownloadButton {
@@ -1972,6 +1998,12 @@ a.landingStoreCard:focus-visible {
     height: 88px;
   }
 
+  .landingGlassDialog--download .landingGlassLogo,
+  .landingGlassDialog--privacy .landingGlassLogo {
+    width: 112px;
+    height: 112px;
+  }
+
   .landingGlassClose {
     top: 25px;
     right: 29px;
@@ -2014,7 +2046,11 @@ a.landingStoreCard:focus-visible {
   }
 
   .landingStoreCard strong {
-    font-size: 14px;
+    font-size: 17px;
+  }
+
+  .landingStoreCard small {
+    font-size: 13px;
   }
 
   .landingPrivacyContent p {
