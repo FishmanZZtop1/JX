@@ -136,7 +136,7 @@ export default function App() {
       aria-label="星海心灵旅程"
       onClick={handlePageClick}
     >
-      {activeScene >= 2 ? (
+      {activeScene >= 2 && activeScene < 4 ? (
         <Suspense fallback={null}>
           <SceneCanvas />
         </Suspense>
