@@ -80,6 +80,7 @@ export default function LandingStarfield() {
     let dpr = 1;
     let portrait = false;
     let stars: LandingStar[] = [];
+    let starGroups: LandingStar[][] = [[], [], []];
     let context: CanvasRenderingContext2D | null = null;
 
     const resize = () => {
@@ -95,6 +96,11 @@ export default function LandingStarfield() {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       stars = createStars(portrait ? 680 : 920, portrait);
+      starGroups = [[], [], []];
+      for (const star of stars) {
+        const group = star.glow >= 2 ? 2 : star.glow >= 1 ? 1 : 0;
+        starGroups[group].push(star);
+      }
     };
 
     const clear = () => {
@@ -106,6 +112,28 @@ export default function LandingStarfield() {
 
     const shouldAnimate = () =>
       !document.hidden && !flightRuntime.reducedMotion && flightRuntime.progress >= LANDING_STARS_START;
+
+    const drawStarGroup = (group: LandingStar[], glow: number, seconds: number, reveal: number) => {
+      if (!context) return;
+      context.shadowBlur = glow;
+
+      for (const star of group) {
+        const wave = Math.sin(seconds * star.speed + star.phase) * 0.5 + 0.5;
+        const twinkle = wave * wave * (3 - 2 * wave);
+        const sweep = star.band
+          ? Math.max(0, Math.cos(seconds * 0.5 - star.x * Math.PI * 2.25)) ** 5
+          : 0;
+        const intensity = Math.min(1.18, 0.28 + twinkle * 0.8 + sweep * 0.42);
+        const alpha = reveal * star.alpha * intensity;
+        const x = star.x * width;
+        const y = star.y * height;
+
+        context.globalAlpha = alpha;
+        context.fillStyle = star.color;
+        context.shadowColor = star.color;
+        context.fillRect(x - star.size * 0.5, y - star.size * 0.5, star.size, star.size);
+      }
+    };
 
     const draw = (now: number) => {
       const canvas = canvasRef.current;
@@ -120,23 +148,9 @@ export default function LandingStarfield() {
       context.globalCompositeOperation = "lighter";
       const seconds = now * 0.001;
 
-      for (const star of stars) {
-        const wave = Math.sin(seconds * star.speed + star.phase) * 0.5 + 0.5;
-        const twinkle = wave * wave * (3 - 2 * wave);
-        const sweep = star.band
-          ? Math.max(0, Math.cos(seconds * 0.5 - star.x * Math.PI * 2.25)) ** 5
-          : 0;
-        const intensity = Math.min(1.18, 0.28 + twinkle * 0.8 + sweep * 0.42);
-        const alpha = reveal * star.alpha * intensity;
-        const x = star.x * width;
-        const y = star.y * height;
-
-        context.globalAlpha = alpha;
-        context.fillStyle = star.color;
-        context.shadowColor = star.color;
-        context.shadowBlur = star.glow;
-        context.fillRect(x - star.size * 0.5, y - star.size * 0.5, star.size, star.size);
-      }
+      drawStarGroup(starGroups[0], 0, seconds, reveal);
+      drawStarGroup(starGroups[1], 1.45, seconds, reveal);
+      drawStarGroup(starGroups[2], 2.4, seconds, reveal);
 
       context.shadowBlur = 0;
       context.globalAlpha = 1;

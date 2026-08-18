@@ -8,7 +8,8 @@ const CLOUD_FULL = 0.858;
 const CAMP_REVEAL = 0.868;
 const CAMP_FULL = 0.922;
 const CLOUD_CLEAR = 0.936;
-const LANDING_PRELOAD_START = 0.64;
+const LANDING_PRELOAD_START = 0.74;
+const LANDING_UNLOAD_START = 0.58;
 const LANDING_DESKTOP_SRC = "/scene-assets/landing-final-desktop-fine-milkyway-v9.mp4";
 const LANDING_MOBILE_SRC = "/scene-assets/landing-final-mobile-fine-milkyway-v12.mp4";
 type LandingDialog = "about" | "contact" | "download" | "privacy" | null;
@@ -54,16 +55,26 @@ export default function LandingSequenceLayer() {
     const syncVideoSource = () => {
       const video = videoRef.current;
       if (!video) return;
-      if (!video.dataset.source && flightRuntime.progress < LANDING_PRELOAD_START) return;
+      const progress = flightRuntime.progress;
+
+      if (video.dataset.source && progress < LANDING_UNLOAD_START) {
+        video.pause();
+        video.removeAttribute("src");
+        delete video.dataset.source;
+        video.load();
+        return;
+      }
+      if (!video.dataset.source && progress < LANDING_PRELOAD_START) return;
 
       const nextSource = mobileQuery.matches ? LANDING_MOBILE_SRC : LANDING_DESKTOP_SRC;
       if (video.dataset.source === nextSource) return;
 
       const shouldResume = !video.paused;
       video.pause();
-      // Metadata is enough to start the transition without forcing the browser
-      // to buffer the full movie while the 3D scene is still active.
-      video.preload = "metadata";
+      // The short lead-in lets the decoder fill a small buffer before the
+      // cloud reveal, while avoiding a video decoder living beside the Earth
+      // scene for most of the page.
+      video.preload = "auto";
       video.src = nextSource;
       video.dataset.source = nextSource;
       video.load();
@@ -147,6 +158,13 @@ export default function LandingSequenceLayer() {
       unsubscribe();
       mobileQuery.removeEventListener?.("change", syncVideoSource);
       window.removeEventListener("resize", syncVideoSource);
+      const video = videoRef.current;
+      if (video) {
+        video.pause();
+        video.removeAttribute("src");
+        delete video.dataset.source;
+        video.load();
+      }
     };
   }, []);
 

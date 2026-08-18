@@ -5,6 +5,7 @@ import HomeStarflightLayer from "./components/HomeStarflightLayer";
 import LandingSequenceLayer from "./components/LandingSequenceLayer";
 import EarthLocator from "./components/EarthLocator";
 import OverlayContent from "./components/OverlayContent";
+import { flightRuntime, subscribeFlightRuntime } from "./flightStore";
 import { FLIGHT_SCENES } from "./sceneData";
 import { useScrollTimeline } from "./useScrollTimeline";
 
@@ -16,6 +17,7 @@ const INTERACTIVE_TARGETS =
 const NEBULA_CLICK_FLIGHT_DURATION = 3000;
 const NEBULA_CLICK_CRUISE_PROGRESS = 0.052;
 const NEBULA_CLICK_EXIT_PROGRESS = 0.13;
+const EARTH_CANVAS_CUTOFF = 0.807;
 
 function isInteractiveTarget(target: EventTarget | null) {
   return target instanceof Element && target.closest(INTERACTIVE_TARGETS) !== null;
@@ -29,12 +31,34 @@ function easeInOutCubic(value: number) {
   return value < 0.5 ? 4 * value * value * value : 1 - Math.pow(-2 * value + 2, 3) / 2;
 }
 
+function useEarthCanvasWindow() {
+  const [isOpen, setIsOpen] = useState(
+    () => flightRuntime.progress >= 0.31 && flightRuntime.progress < EARTH_CANVAS_CUTOFF,
+  );
+
+  useEffect(() => {
+    const sync = () => {
+      const next = flightRuntime.progress >= 0.31 && flightRuntime.progress < EARTH_CANVAS_CUTOFF;
+      setIsOpen((current) => (current === next ? current : next));
+    };
+
+    const unsubscribe = subscribeFlightRuntime(sync);
+    sync();
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  return isOpen;
+}
+
 export default function App() {
   const [activeScene, setActiveScene] = useState(0);
   const clickFlightRafRef = useRef(0);
   const clickFlightRunningRef = useRef(false);
   const activeSceneId = FLIGHT_SCENES[activeScene]?.id ?? "nebula";
   const canAdvance = activeScene < FLIGHT_SCENES.length - 1;
+  const earthCanvasWindowOpen = useEarthCanvasWindow();
   const handleSceneChange = useCallback((index: number) => {
     setActiveScene(index);
   }, []);
@@ -136,7 +160,7 @@ export default function App() {
       aria-label="星海心灵旅程"
       onClick={handlePageClick}
     >
-      {activeScene >= 2 && activeScene < 4 ? (
+      {earthCanvasWindowOpen && activeScene >= 2 && activeScene < 4 ? (
         <Suspense fallback={null}>
           <SceneCanvas />
         </Suspense>

@@ -34,7 +34,6 @@ export default function OverlayContent({ activeScene }: OverlayContentProps) {
                     className="landingLockupImage"
                     src="/scene-assets/landing-lockup-xiu.png"
                     decoding="async"
-                    fetchPriority="low"
                   />
                 </picture>
               ) : null}

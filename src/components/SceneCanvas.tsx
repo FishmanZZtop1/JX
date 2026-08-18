@@ -10,7 +10,13 @@ function dprRange(): [number, number] {
     window.matchMedia("(max-width: 760px)").matches ||
     window.matchMedia("(pointer: coarse)").matches ||
     (navigator.hardwareConcurrency || 8) <= 4;
-  return lowPerformance ? [0.82, 1] : [1, 1.25];
+  const pixelBudget = lowPerformance ? 1_900_000 : 4_200_000;
+  const viewportPixels = Math.max(1, window.innerWidth * window.innerHeight);
+  const budgetedDpr = Math.sqrt(pixelBudget / viewportPixels);
+  const minimumDpr = lowPerformance ? 0.72 : 0.62;
+  const maximumDpr = lowPerformance ? 1 : 1.25;
+  const dpr = Math.min(maximumDpr, Math.max(minimumDpr, budgetedDpr));
+  return [dpr, dpr];
 }
 
 function SceneFrameDriver() {
@@ -23,8 +29,10 @@ function SceneFrameDriver() {
       document.visibilityState === "visible" &&
       flightRuntime.progress >= 0.27 &&
       // The landing sequence owns the final viewport. Stop the 3D render loop
-      // before its video and canvas effects become visible on top of it.
-      flightRuntime.progress < 0.84;
+      // before its video and canvas effects become visible on top of it. The
+      // timeline still invalidates one frame per scroll update after this
+      // point, so the Earth remains responsive without a second free-running RAF.
+      flightRuntime.progress < 0.78;
 
     const tick = () => {
       rafId = 0;
